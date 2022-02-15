@@ -48,13 +48,16 @@ namespace Svetelna_Brana {
     //% block="Proveď kontrolu"
 
     export function ProvedKontrolu(): boolean {
-        if (calibrated == true && (input.lightLevel() > lightLevel + toleration || input.lightLevel() < lightLevel - toleration)) {
-            return true
-        } else if (calibrationBegan == false) {
+        if (calibrationBegan == false) {
             basic.showString("Zkalibrujte senzor!")
-        } else if (calibrated == true) {
+        } 
+        else if (calibrated == true) {
+            if (input.lightLevel() > lightLevel + toleration || input.lightLevel() < lightLevel - toleration) {
+                return true
+            }
             basic.showIcon(IconNames.Happy)
-        }
+
+        } 
         return false
     }
 
