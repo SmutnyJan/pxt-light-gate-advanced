@@ -46,19 +46,31 @@ namespace Svetelna_Brana {
     * Zkontroluje hladinu světla
     */
     //% block="Proveď kontrolu"
+    export function ProvedKontrolu(action: () => void) {
+        const myEventID = 111 + Math.randomRange(0, 100); // semi-unique
 
-    export function ProvedKontrolu(): boolean {
-        if (calibrationBegan == false) {
-            basic.showString("Zkalibrujte senzor!")
-        } 
-        else if (calibrated == true) {
-            if (input.lightLevel() > lightLevel + toleration || input.lightLevel() < lightLevel - toleration) {
-                return true
+        control.onEvent(myEventID, 0, function () {
+            control.inBackground(() => {
+                action()
+            })
+        })
+
+        control.inBackground(() => {
+            while (true) {
+                if (calibrationBegan == false) {
+                    basic.showString("Zkalibrujte senzor!")
+                }
+                else if (calibrated == true) {
+                    if (input.lightLevel() > lightLevel + toleration || input.lightLevel() < lightLevel - toleration) {
+                        control.raiseEvent(myEventID, 0)
+                    }
+                    else {
+                        basic.showIcon(IconNames.Happy)
+                    }
+                }
+                basic.pause(20)
             }
-            basic.showIcon(IconNames.Happy)
-
-        } 
-        return false
+        })
     }
 
 
