@@ -1,72 +1,52 @@
-/**
- * Použijte tento soubor k definování personalizovaných funkcí a bloků.
- * Přečtěte si více na https://makecode.microbit.org/blocks/custom
- */
-
 
 /**
  * Custom blocks
  */
 //% weight=100 color=#a0a803 icon="\uf030"
-namespace Svetelna_Brana {
+namespace SvetelnaBrana {
     let toleration = 0
-    let calibrated = false
-    let calibrationBegan = false
     let lightLevel = 0
+    let lightLevelDrop = false
+
 
     /**
-    * Nastaví novou toleraci
+    * Spustí kalibraci a nastaví toleranci
     */
-    //% block="Nastav toleranci %tolerace"
+    //% block="Zkalibruj a nastav toleranci %tol"
 
-    export function NastavitToleranci(tol: number): void {
+    export function spustitKalibraci(tol: number): void {
+        let sumOfMeasures = 0;
+        for (let i = 0; i < 10; i++) {
+            sumOfMeasures += input.lightLevel()
+        }
+        lightLevel = Math.round(sumOfMeasures / 10)
         toleration = tol;
     }
 
     /**
-    * Spustí kalibraci
+    * Zkontroluje, jestli došlo k porušení hladiny světla
     */
-    //% block="Zkalibruj za %cas vteřin"
+    //% block="Při porušení hladiny světla"
+    export function onLightDrop(action: () => void) {
+        const myEventID = 111 + Math.randomRange(0, 100); // semi-unique
 
-    export function SpustitKalibraci(seconds: number): void {
-        calibrated = false
-        led.stopAnimation()
-        music.stopAllSounds()
-        calibrationBegan = true
-        while (seconds > 0) {
-            basic.showNumber(seconds)
-            basic.pause(1000)
-            seconds += -1
-        }
-        lightLevel = input.lightLevel()
-        calibrated = true
-    }
+        control.onEvent(myEventID, 0, function () {
+            control.inBackground(() => {
+                action()
+            })
+        })
 
-    /**
-    * Zkontroluje hladinu světla
-    */
-    //% block="Proveď kontrolu"
-
-    export function ProvedKontrolu(): boolean {
-        if (calibrationBegan == false) {
-            basic.showString("Zkalibrujte senzor!")
-        } 
-        else if (calibrated == true) {
-            if (input.lightLevel() > lightLevel + toleration || input.lightLevel() < lightLevel - toleration) {
-                return true
+        control.inBackground(() => {
+            while (true) {
+                let measuredLight = input.lightLevel();
+                if (measuredLight > lightLevel + toleration || measuredLight < lightLevel - toleration) {
+                    lightLevelDrop = true
+                    control.raiseEvent(myEventID, 1)
+                }
+                basic.pause(20)
             }
-            basic.showIcon(IconNames.Happy)
-
-        } 
-        return false
+        })
     }
-
-
-
-
-
-
-
 
 
 
