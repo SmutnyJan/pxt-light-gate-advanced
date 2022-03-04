@@ -1,13 +1,12 @@
+let jeHraZapnuta = false
+SvetelnaBrana.onLightDrop(function () {
+    if (jeHraZapnuta) {
+        music.playTone(330, music.beat(BeatFraction.Whole))
+    }
+})
 input.onButtonPressed(Button.A, function () {
-    Svetelna_Brana.SpustitKalibraci(5)
+    if (jeHraZapnuta == false) {
+        SvetelnaBrana.spustitKalibraci(50)
+    }
+    jeHraZapnuta = !(jeHraZapnuta)
 })
-Svetelna_Brana.ProvedKontrolu(function () {
-    basic.showLeds(`
-        # . . . #
-        . # . # .
-        . . # . .
-        . # # # .
-        # . . . #
-        `)
-})
-Svetelna_Brana.NastavitToleranci(25)
