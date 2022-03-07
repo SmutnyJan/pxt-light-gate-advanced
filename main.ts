@@ -1,5 +1,5 @@
 let jeHraZapnuta = false
-SvetelnaBrana.onLightDrop(function () {
+SvetelnaBrana.kdyzSpadneHladina(function () {
     if (jeHraZapnuta) {
         music.playTone(330, music.beat(BeatFraction.Whole))
     }
