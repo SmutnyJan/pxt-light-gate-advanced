@@ -6,7 +6,7 @@ namespace SvetelnaBrana {
 
     /**
     * Spustí kalibraci a nastaví toleranci
-    * @tol Směr, do kterého se má kurzor pohnout
+    * @tol Tolerance výchylky
     */
     //% block="Zkalibruj a nastav toleranci %tol"
 
