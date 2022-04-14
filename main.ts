@@ -1,7 +1,7 @@
 let jeHraZapnuta = false
 input.onButtonPressed(Button.A, function () {
     if (jeHraZapnuta == false) {
-        lightGate.calibrate(50)
+        lightGate.calibrate(Deviation.Medium)
     }
     jeHraZapnuta = !(jeHraZapnuta)
 })
